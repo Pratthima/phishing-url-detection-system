@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Phishing URL Detection</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #4e73df, #1cc88a);
+            font-family: "Poppins", sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: #ffffff;
+            width: 450px;
+            padding: 40px;
+            border-radius: 18px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 25px;
+        }
+
+        #urlInput {
+            width: 90%;
+            padding: 12px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            outline: none;
+        }
+
+        #urlInput:focus {
+            border-color: #4e73df;
+        }
+
+        button {
+            width: 95%;
+            padding: 12px;
+            background: #4e73df;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #3752c6;
+        }
+
+        #result {
+            margin-top: 25px;
+            font-size: 18px;
+            font-weight: 600;
+            white-space: pre-line;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Phishing URL Detection</h1>
+
+        <input type="text" id="urlInput" placeholder="Enter URL to check...">
+        <button onclick="checkURL()">Analyze URL</button>
+
+        <p id="result"></p>
+    </div>
+
+    <script>
+        async function checkURL() {
+            const url = document.getElementById("urlInput").value.trim();
+
+            if (!url) {
+                alert("Please enter a URL!");
+                return;
+            }
+
+            const response = await fetch("/predict", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ url: url })
+            });
+
+            const data = await response.json();
+
+            if (data.error) {
+                document.getElementById("result").innerText = "Error: " + data.error;
+                document.getElementById("result").style.color = "red";
+                return;
+            }
+
+            const resultText = `Prediction: ${data.prediction}\nConfidence: ${data.confidence_score}`;
+            const resultElem = document.getElementById("result");
+            resultElem.innerText = resultText;
+
+            if (data.prediction === "Phishing") {
+                resultElem.style.color = "red";
+            } else {
+                resultElem.style.color = "green";
+            }
+        }
+    </script>
+</body>
+</html>
