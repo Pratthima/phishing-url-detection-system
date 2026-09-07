@@ -133,10 +133,4 @@ The model can be evaluated using:
 * Improved feature engineering
 * Cloud deployment
 
-## 👩‍💻 Author
 
-**Pratthima**
-
-AI & Data Science Student
-
----
